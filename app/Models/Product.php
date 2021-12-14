@@ -28,6 +28,12 @@ class Product extends Model
         return ProductResource::collection(Product::get());
     }
 
+    /**
+     * it will add a new product record  in the Database
+     * @param array 
+     * @return boolean 
+     */
+
     public function storeProduct($data)
     {
         try {
@@ -43,6 +49,12 @@ class Product extends Model
             return false;
         }
     }
+
+    /**
+     * it will modify the product 
+     * @param array 
+     * @return boolean 
+     */
 
     public function updateProduct($data)
     {
@@ -69,6 +81,11 @@ class Product extends Model
         }
     }
 
+    /**
+     * it will remove the product record from Database  
+     * @param id
+     * @return boolean 
+     */
 
     public function deleteProduct($productId)
     {
@@ -84,26 +101,50 @@ class Product extends Model
         }
     }
 
-    public function scopeSearchByKeyword($query,$keyword){ 
-        return $query->where('name','like','%'.$keyword.'%');
+    /**
+     *local scope for product model   
+     * @param keyword 
+     * @return statement  
+     */
+
+    public function scopeSearchByKeyword($query, $keyword)
+    {
+        return $query->where('name', 'like', '%' . $keyword . '%');
     }
 
-    public function searchByKeword($keyword){
+    /**
+     *it will check the availablity of record in the Database  with belonging keyword  
+     * @param keyword 
+     * @return Illuminate\Support\Facades\Response\JSON  
+     */
+
+    public function searchByKeword($keyword)
+    {
 
         return  ProductResource::collection(Product::searchByKeyword($keyword)->get());
-
     }
 
+    /**
+     * it will remove the product Image from public path  
+     * @param id
+     * @return boolean 
+     */
 
     public function removeFile($productId)
     {
         $result = $this->hasProductExits($productId);
 
         if (isset($result->image)) {
-
             unlink(base_path() . '/public/storage/product/' . $result->image);
         }
     }
+
+     /**
+     * it will check the availablity of record in the Database  
+     * @param id
+     * @return boolean 
+     */
+
 
     public function hasProductExits($productId)
     {

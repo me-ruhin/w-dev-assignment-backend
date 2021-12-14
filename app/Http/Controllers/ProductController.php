@@ -17,14 +17,17 @@ class ProductController extends BaseController
      * it resolves the dependancy of product class
      * @return object
      */
+
     public function __construct(Product $productObj)
     {
         $this->product = $productObj;
     }
+
     /**
      * It will return the Product lists
      * @return Illuminate\Support\Facades\Response\Json
      */
+
     public function getProducts()
     {
         return $this->product->getProducts();
@@ -51,7 +54,6 @@ class ProductController extends BaseController
         return $this->sendResponse($this->getProducts(), "Product successfully added", 200);
     }
 
-
     /**
      * It will update  Product
      * @param name,description,price,qty,image
@@ -73,8 +75,6 @@ class ProductController extends BaseController
         return $this->sendResponse($this->getProducts(), "Product successfully update", 200);
     }
 
-
-
     /**
      * It will remove the  Product from storate 
      * @param productId
@@ -91,6 +91,11 @@ class ProductController extends BaseController
         return $this->sendResponse($this->getProducts(), "Product successfully deleted", 200);
     }
 
+    /**
+     * It will serach the specefic product from Database  
+     * @param keyword which is belongsTo the product name
+     * @return Illuminate\Support\Facades\Response\Json
+     */
 
     public function searchByKeword($keyword)
     {
