@@ -51,7 +51,7 @@ class Product extends Model
         if ($product) {
             try {
                 DB::beginTransaction();
-                Product::create($data);
+                $product->update($data);
                 DB::commit();
                 return true;
             } catch (\Exception $e) {
@@ -70,12 +70,11 @@ class Product extends Model
     }
 
 
-    public function deleteProduct($data)
+    public function deleteProduct($productId)
     {
-        $product = $this->hasProductExits($data['id']);
+        $product = $this->hasProductExits($productId);
 
         if ($product) {
-
             return $product->delete();
         } else {
 
@@ -85,7 +84,26 @@ class Product extends Model
         }
     }
 
+    public function scopeSearchByKeyword($query,$keyword){ 
+        return $query->where('name','like','%'.$keyword.'%');
+    }
 
+    public function searchByKeword($keyword){
+
+        return  ProductResource::collection(Product::searchByKeyword($keyword)->get());
+
+    }
+
+
+    public function removeFile($productId)
+    {
+        $result = $this->hasProductExits($productId);
+
+        if (isset($result->image)) {
+
+            unlink(base_path() . '/public/storage/product/' . $result->image);
+        }
+    }
 
     public function hasProductExits($productId)
     {

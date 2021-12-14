@@ -48,29 +48,57 @@ class ProductController extends BaseController
         if (!$result) {
             return $this->sendError($this->product->errors, $this->product->errors['message'], $this->product->errors['code']);
         }
-        return $this->sendResponse($this->getProducts(),"Product successfully added",200);
+        return $this->sendResponse($this->getProducts(), "Product successfully added", 200);
     }
 
 
-     /**
-     * It will store new  Product
+    /**
+     * It will update  Product
      * @param name,description,price,qty,image
      * @return Illuminate\Support\Facades\Response\Json
      */
 
-    public function UpdateProduct(ProductUpdateRequest $request)
+    public function updateProduct(ProductUpdateRequest $request)
     {
-
         if ($request->hasFile('photo')) {
+            $this->product->removeFile($request->id);
             $imageName =  uploadImage('product/', $request->file('photo'));
             $request->merge(['image' => $imageName]);
         }
-        $result = $this->product->storeProduct($request->all());
+        $result = $this->product->updateProduct($request->all());
 
         if (!$result) {
             return $this->sendError($this->product->errors, $this->product->errors['message'], $this->product->errors['code']);
         }
-        return $this->sendResponse($this->getProducts(),"Product successfully added",200);
+        return $this->sendResponse($this->getProducts(), "Product successfully update", 200);
     }
 
+
+
+    /**
+     * It will remove the  Product from storate 
+     * @param productId
+     * @return Illuminate\Support\Facades\Response\Json
+     */
+
+    public function deleteProduct($productId)
+    {
+        $result = $this->product->deleteProduct($productId);
+
+        if (!$result) {
+            return $this->sendError($this->product->errors, $this->product->errors['message'], $this->product->errors['code']);
+        }
+        return $this->sendResponse($this->getProducts(), "Product successfully deleted", 200);
+    }
+
+
+    public function searchByKeword($keyword)
+    {
+        $result = $this->product->searchByKeword($keyword);
+
+        if (count($result) <= 0) {
+            return $this->sendError('', 'product not found', 404);
+        }
+        return $this->sendResponse($result, "Product found", 200);
+    }
 }

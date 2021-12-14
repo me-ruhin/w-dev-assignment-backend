@@ -24,8 +24,11 @@ use App\Http\Controllers\ProductController;
 Route::post('v1/register', [AuthController::class, 'register']);
 Route::post('v1/login', [AuthController::class, 'login']);
 
-Route::group(['middleware'=>['auth:sanctum'],'prefix'=>"v1"], function () {
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => "v1"], function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('/products',[ProductController::class,'getProducts']);
-    Route::post('/products',[ProductController::class,'storeProduct']);
+    Route::get('/products', [ProductController::class, 'getProducts']);
+    Route::post('/products', [ProductController::class, 'storeProduct']);
+    Route::put('/update/products', [ProductController::class, 'updateProduct']);
+    Route::delete('/products/{id}', [ProductController::class, 'deleteProduct']);
+    Route::get('products/{keyword}',[ProductController::class, 'searchByKeword']);
 });

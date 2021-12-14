@@ -24,7 +24,8 @@ class ProductUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            "name" => 'required|unique:products,name',
+            "id" => 'required|exists:products,id',
+            "name" => 'required',
             "description" => 'required',
             "qty" => 'required',
             "price" => 'required'
