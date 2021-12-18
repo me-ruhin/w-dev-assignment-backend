@@ -39,11 +39,3 @@ Route::group(['middleware' => ['auth:sanctum'], 'prefix' => "v1"], function () {
     Route::post('modify/orders/{reference_no}', [OrderController::class, 'modifyExistingOrder']);
 });
 
-Route::get('v1/test', function () {
-
-    $deliveredOrderList = OrderMaster::deliveredOrder()->get();
-    foreach ($deliveredOrderList as $delivery) {
-        Delivery::create($delivery);
-        $delivery->delete();
-    }
-});
