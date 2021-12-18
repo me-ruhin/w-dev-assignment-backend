@@ -16,3 +16,10 @@ if (!function_exists('uploadImage')) {
         }
     }
 }
+
+if (!function_exists('numberGenerator')) {
+    function numberGenerator($prefix)
+    {
+        return $prefix . '-' . time();
+    }
+}
