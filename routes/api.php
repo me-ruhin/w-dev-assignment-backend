@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+use App\Models\Delivery;
+use App\Models\OrderMaster;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,15 +29,21 @@ Route::post('v1/login', [AuthController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum', 'isAdmin'], 'prefix' => "v1/admin"], function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('/products', [ProductController::class, 'getProducts']);
-    Route::post('/products', [ProductController::class, 'storeProduct']);
-    Route::put('/update/products', [ProductController::class, 'updateProduct']);
-    Route::delete('/products/{id}', [ProductController::class, 'deleteProduct']);
-    Route::get('products/{keyword}', [ProductController::class, 'searchByKeword']);
+    Route::apiResource('products', ProductController::class);
 });
 
 
 Route::group(['middleware' => ['auth:sanctum'], 'prefix' => "v1"], function () {
     Route::post('logout', [AuthController::class, 'logout']);
-   
+    Route::post('orders', [OrderController::class, 'addOrders']);
+    Route::post('modify/orders/{reference_no}', [OrderController::class, 'modifyExistingOrder']);
+});
+
+Route::get('v1/test', function () {
+
+    $deliveredOrderList = OrderMaster::deliveredOrder()->get();
+    foreach ($deliveredOrderList as $delivery) {
+        Delivery::create($delivery);
+        $delivery->delete();
+    }
 });
