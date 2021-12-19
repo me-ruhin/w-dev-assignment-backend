@@ -21,6 +21,11 @@ class Order extends Model
     public $orderNumber;
 
 
+    public function getOrderList(OrderMaster $orderMasterObj){
+        return $orderMasterObj->getOrderList();
+
+    }
+
     /**
      * It will store the order data in storage
      * @param  $datas array
@@ -170,4 +175,21 @@ class Order extends Model
 
         return $orderMasterObj->currentOrderStatus($referenceNo);
     }
+
+    public function updateOrderStatus($referenceNo,$order_status, OrderMaster $orderMasterObj)
+    {
+        try{
+
+            return $orderMasterObj->updateOrderStatus($referenceNo,$order_status);
+        }
+        catch (\Exception $e){
+            $this->errors['message'] = $e->getMessage();
+            $this->errors['code'] = $e->getCode();
+            return false;
+
+        }
+
+    }
+
+
 }

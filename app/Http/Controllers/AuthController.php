@@ -25,7 +25,7 @@ class AuthController extends BaseController
     {
         $attributes = $request->except('_token');
         if (!Auth::attempt($attributes)) {
-            return $this->sendError("", 'Invalid credentials', 401);
+            return $this->sendError("Invalid credentials", 'Invalid credentials', 401);
         }
         $data['access_token'] = auth()->user()->createToken('demoApps')->plainTextToken;
         $data['role_id'] = auth()->user()->is_admin;

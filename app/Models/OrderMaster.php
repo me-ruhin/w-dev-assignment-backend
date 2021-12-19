@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\OrderResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,13 +24,20 @@ class OrderMaster extends Model
      */
     protected $fillable = ['user_id', 'reference_no', 'total_amount', 'paid_amount', 'payment_method', 'order_status'];
 
+    public function getOrderList()
+    {
+        return OrderResource::collection(OrderMaster::get());
+    }
+
+
     public function addMasterDetails($data)
     {
         OrderMaster::create($data);
     }
 
-    public function scopeDeliveredOrder($query){
-        return $query->where('order_status' , '5');
+    public function scopeDeliveredOrder($query)
+    {
+        return $query->where('order_status', '5');
     }
 
     public function hasReferenceNumberExists($referenceNo)
@@ -54,5 +62,17 @@ class OrderMaster extends Model
             return true;
         }
         return false;
+    }
+
+    public function updateOrderStatus($referenceNo, $orderStatus)
+    {
+        try {
+            $result = OrderMaster::where('reference_no', $referenceNo)->first();
+            $result->order_status = $orderStatus;
+            $result->save();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

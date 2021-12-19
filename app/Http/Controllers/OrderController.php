@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Http\Requests\OrderStatusRequest;
 use App\Jobs\MailSendingJob;
 use App\Models\Order;
 use App\Models\OrderHistory;
@@ -34,7 +35,7 @@ class OrderController extends BaseController
     public function index()
     {
 
-        return $this->order->getOrderList();
+        return $this->order->getOrderList(new OrderMaster);
     }
 
 
@@ -81,5 +82,21 @@ class OrderController extends BaseController
     public function sendNotification()
     {
         dispatch(new MailSendingJob(env('ADMIN_EMAIL')));
+    }
+
+    public function modifyExistingOrderStatus(OrderStatusRequest $request, $referenceNo)
+    {
+
+        if (!$this->order->hasReferenceNumberExists($referenceNo, new OrderMaster)) {
+            return $this->sendError([], 'Invalid Reference Number', 404);
+        }
+
+        $result = $this->order->updateOrderStatus($referenceNo,$request->order_status,new OrderMaster);
+        if (!$result) {
+            return $this->sendError($this->order->errors, $this->order->errors['message'], $this->order->errors['code']);
+        }
+
+        return $this->sendResponse([], 'Order status Successfully updated!', 200);
+
     }
 }

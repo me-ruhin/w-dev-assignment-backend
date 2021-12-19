@@ -30,6 +30,9 @@ Route::post('v1/login', [AuthController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum', 'isAdmin'], 'prefix' => "v1/admin"], function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::apiResource('products', ProductController::class);
+    Route::post('/modify/orders/status/{reference_no}', [OrderController::class, 'modifyExistingOrderStatus']);
+    Route::get('orders', [OrderController::class, 'index']);
+
 });
 
 
