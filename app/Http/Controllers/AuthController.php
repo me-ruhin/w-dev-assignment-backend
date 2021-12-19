@@ -28,6 +28,7 @@ class AuthController extends BaseController
             return $this->sendError("", 'Invalid credentials', 401);
         }
         $data['access_token'] = auth()->user()->createToken('demoApps')->plainTextToken;
+        $data['role_id'] = auth()->user()->is_admin;
         return $this->sendResponse($data,'User successfully logged in');
     }
 
